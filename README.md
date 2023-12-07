@@ -121,7 +121,7 @@ int main() {
     printQueue(queue);
 
     // Clearing the queue
-    clearQueue(queue);
+    clearQueue(queue); 
     printQueue(queue);
 
     free(queue->array);
