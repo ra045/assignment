@@ -1,0 +1,52 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Define the packet structure
+struct Packet {
+    unsigned short length;
+    unsigned short data_type;
+    unsigned char data;
+};
+
+// Function to extract payload from the input data
+unsigned char* extract_payload(const unsigned char* input_array, size_t array_size) {
+    // Check if the array size is valid
+    if (array_size < 5) {
+        printf("Invalid input array size.\n");
+        return NULL;
+    }
+
+    // Create a new array to store the payload
+    size_t payload_size = array_size - 5; // Subtract header size
+    unsigned char* payload = (unsigned char*)malloc(payload_size);
+    if (!payload) {
+        printf("Memory allocation failed.\n");
+        return NULL;
+    }
+
+    // Copy the payload data
+    for (size_t i = 5; i < array_size; ++i) {
+        payload[i - 5] = input_array[i];
+    }
+
+    return payload;
+}
+
+int main() {
+    unsigned char input_array[] = {0x00, 0x02, 0x00, 0x11, 0x01, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x10};
+    size_t array_size = sizeof(input_array) / sizeof(input_array[0]);
+
+    unsigned char* extracted_payload = extract_payload(input_array, array_size);
+    if (extracted_payload) {
+        printf("Extracted payload data:\n");
+        for (size_t i = 0; i < array_size - 5; ++i) {
+            printf("%02X ", extracted_payload[i]);
+        }
+        printf("\n");
+
+        // Clean up
+        free(extracted_payload);
+    }
+
+    return 0;
+}
